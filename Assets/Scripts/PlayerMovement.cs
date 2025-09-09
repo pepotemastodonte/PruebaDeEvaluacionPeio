@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
 
     private float h;
     private float v;
+    private float iFrame;
 
     private Vector3 movement;
 
@@ -20,18 +21,24 @@ public class PlayerMovement : MonoBehaviour
 
     Rigidbody rigidbody;
 
+    GameOver gameOver;
     
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        iFrame = 0;
+
         rigidbody = GetComponent<Rigidbody>();
 
+        gameOver = FindAnyObjectByType<GameOver>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        iFrame += Time.deltaTime;
+
         h = Input.GetAxisRaw("Horizontal");
         v = Input.GetAxisRaw("Vertical");
 
@@ -42,6 +49,11 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Shoot();
+        }
+
+        if(healthPoints <= 0)
+        {
+            gameOver.GameEnding();
         }
     }
 
@@ -56,17 +68,19 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.name.Equals("Enemy(Clone)"))
+        if(collision.gameObject.name.Equals("Enemy(Clone)") && iFrame >= .75)
         {
             healthPoints -= 5;
+            iFrame = 0;
         }
     }
 
     private void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.name.Equals("Enemy(Clone)"))
+        if (collision.gameObject.name.Equals("Enemy(Clone)") && iFrame >= .75)
         {
             healthPoints -= 5;
+            iFrame = 0;
         }
     }
 }
