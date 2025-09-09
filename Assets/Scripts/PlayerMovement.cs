@@ -5,6 +5,7 @@ public class PlayerMovement : MonoBehaviour
 {
     public int speed;
     public int force;
+    public int healthPoints = 100;
 
     private float h;
     private float v;
@@ -51,5 +52,21 @@ public class PlayerMovement : MonoBehaviour
         Rigidbody rb = projectile.GetComponent<Rigidbody>();
 
         rb.AddForce(weapon.transform.forward * force);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.name.Equals("Enemy(Clone)"))
+        {
+            healthPoints -= 5;
+        }
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.name.Equals("Enemy(Clone)"))
+        {
+            healthPoints -= 5;
+        }
     }
 }
