@@ -6,7 +6,7 @@ public class CameraMovement : MonoBehaviour
     [SerializeField]
     private Transform player;
 
-    private Vector3 distance = new Vector3(0, 5, -10);
+    private Vector3 distance = new Vector3(0, 11, -7);
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

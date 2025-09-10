@@ -10,9 +10,12 @@ public class EnemyMovement : MonoBehaviour
 
     Rigidbody rb;
 
+    UIScript uIScript;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        uIScript = FindAnyObjectByType<UIScript>();
         timer = 1;
         rb = GetComponent<Rigidbody>();
     }
@@ -32,9 +35,9 @@ public class EnemyMovement : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log(collision.gameObject.name);
         if(collision.gameObject.name.Equals("Bullet(Clone)"))
         {
+            uIScript.count++;
             Destroy(this.gameObject);
             Destroy(collision.gameObject);
         }

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Collections;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -22,7 +23,8 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody rigidbody;
 
     GameOver gameOver;
-    
+
+    UIScript uIScript;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -32,6 +34,8 @@ public class PlayerMovement : MonoBehaviour
         rigidbody = GetComponent<Rigidbody>();
 
         gameOver = FindAnyObjectByType<GameOver>();
+
+        uIScript = FindAnyObjectByType<UIScript>();
     }
 
     // Update is called once per frame
@@ -42,11 +46,19 @@ public class PlayerMovement : MonoBehaviour
         h = Input.GetAxisRaw("Horizontal");
         v = Input.GetAxisRaw("Vertical");
 
+
         movement = new Vector3(h, 0 ,v) * speed;
-       
+
+        /*float angle = Mathf.Atan2(movement.x, movement.z); //No funciona
+        Debug.Log(angle);
+        transform.rotation = Quaternion.Euler(0, angle, 0);*/
+
+        Quaternion targetRotation = Quaternion.LookRotation(movement);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10);
+
         rigidbody.MovePosition(rigidbody.position + movement * Time.deltaTime);
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && uIScript.canContinue)
         {
             Shoot();
         }
