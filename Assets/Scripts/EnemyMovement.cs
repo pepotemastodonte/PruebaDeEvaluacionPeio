@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Rendering;
+using System.Collections.Generic;
 
 public class EnemyMovement : MonoBehaviour
 {
@@ -11,11 +12,14 @@ public class EnemyMovement : MonoBehaviour
     Rigidbody rb;
 
     UIScript uIScript;
+    Spawner spawner;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         uIScript = FindAnyObjectByType<UIScript>();
+        spawner = FindAnyObjectByType<Spawner>();   
+
         timer = 1;
         rb = GetComponent<Rigidbody>();
     }
@@ -38,6 +42,7 @@ public class EnemyMovement : MonoBehaviour
         if(collision.gameObject.name.Equals("Bullet(Clone)"))
         {
             uIScript.count++;
+            spawner.RevomeEnemy(this.gameObject);
             Destroy(this.gameObject);
             Destroy(collision.gameObject);
         }

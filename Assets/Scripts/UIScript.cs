@@ -1,32 +1,41 @@
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIScript : MonoBehaviour
 {
     private float maxHealth;
-    public int count;
     private float timeCount;
+
     private int time;
+    public int count;
 
     public bool canContinue;
 
     public Image image;
     public Image menuImage;
+
     public Text countText;
     public Text timeText;
+    public Text waveNumberText;
+
     public Button playbutton;
 
     PlayerMovement playerMovement;
+    Spawner spawner;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         Time.timeScale = 0f;
+
         canContinue = false;
 
         countText.text = "0";
 
         playerMovement = FindAnyObjectByType<PlayerMovement>();
+
+        spawner = FindAnyObjectByType<Spawner>();
 
         maxHealth = playerMovement.healthPoints;
     }
@@ -49,16 +58,17 @@ public class UIScript : MonoBehaviour
 
         timeCount += Time.deltaTime;
 
-        if(timeCount >= 1)
+        if(timeCount >= 1 && canContinue)
         {
             time++;
             timeCount = 0;
         }
 
-        image.fillAmount = playerMovement.healthPoints / maxHealth;
+        image.fillAmount = playerMovement.currentHealth / maxHealth;
 
         countText.text = count.ToString();
         timeText.text = time.ToString();
+        waveNumberText.text = spawner.WaveIndicator.ToString();
     }
 
     public void StartGame()

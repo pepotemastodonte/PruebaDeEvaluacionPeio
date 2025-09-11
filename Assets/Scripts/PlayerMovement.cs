@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
     public int speed;
     public int force;
     public int healthPoints = 100;
+    public int currentHealth;
 
     private float h;
     private float v;
@@ -26,6 +27,8 @@ public class PlayerMovement : MonoBehaviour
 
     UIScript uIScript;
 
+    HealthSpawner healthSpawner;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -36,6 +39,10 @@ public class PlayerMovement : MonoBehaviour
         gameOver = FindAnyObjectByType<GameOver>();
 
         uIScript = FindAnyObjectByType<UIScript>();
+
+        healthSpawner = FindAnyObjectByType<HealthSpawner>();
+
+        currentHealth = healthPoints;
     }
 
     // Update is called once per frame
@@ -54,6 +61,7 @@ public class PlayerMovement : MonoBehaviour
         transform.rotation = Quaternion.Euler(0, angle, 0);*/
 
         Quaternion targetRotation = Quaternion.LookRotation(movement);
+
         transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10);
 
         rigidbody.MovePosition(rigidbody.position + movement * Time.deltaTime);
@@ -63,7 +71,7 @@ public class PlayerMovement : MonoBehaviour
             Shoot();
         }
 
-        if(healthPoints <= 0)
+        if(currentHealth <= 0)
         {
             gameOver.GameEnding();
         }
@@ -82,8 +90,13 @@ public class PlayerMovement : MonoBehaviour
     {
         if(collision.gameObject.name.Equals("Enemy(Clone)") && iFrame >= .75)
         {
-            healthPoints -= 5;
+            currentHealth -= 5;
             iFrame = 0;
+        }
+        if(collision.gameObject.name.Equals("HealthPickUp(Clone)"))
+        {
+            HealPlayer();
+            healthSpawner.RevomeHealth(collision.gameObject);
         }
     }
 
@@ -91,8 +104,17 @@ public class PlayerMovement : MonoBehaviour
     {
         if (collision.gameObject.name.Equals("Enemy(Clone)") && iFrame >= .75)
         {
-            healthPoints -= 5;
+            currentHealth -= 5;
             iFrame = 0;
+        }
+    }
+
+    private void HealPlayer()
+    {
+        currentHealth += 20;
+        if(currentHealth >= healthPoints)
+        {
+            currentHealth = healthPoints;
         }
     }
 }

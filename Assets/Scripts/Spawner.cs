@@ -1,33 +1,52 @@
 using UnityEngine;
+using System.Collections;
+using NUnit.Framework;
+using System.Collections.Generic;
 
 public class Spawner : MonoBehaviour
 {
-    private float timer;
+    private int waveNumber = 1;
+    public int WaveIndicator { get { return waveNumber; } set { waveNumber = value; } }
 
-    MeshCollider meshCollider;
+    private List<GameObject> spawnedEnemy = new List<GameObject>();
 
     [SerializeField]
     GameObject enemy;
 
+    UIScript UIScript;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        timer = 0;
-        meshCollider = GetComponent<MeshCollider>();    
+        RoundStart();
+        UIScript = FindAnyObjectByType<UIScript>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        timer += Time.deltaTime;
-        if (timer >= .5)
+        if (spawnedEnemy.Count == 0 && UIScript.canContinue)
         {
+            waveNumber++;
+            RoundStart();
+        }
+    }
+
+    void RoundStart()
+    {
+        for (int i = 0; i < waveNumber; i++)
+        {
+
             Vector3 randomPosition = new Vector3(Random.Range(-20f, 20f), 1f, (Random.Range(-20f, 20f)));
 
-            Instantiate(enemy, randomPosition, Quaternion.identity);
+            GameObject roundEnemy = Instantiate(enemy, randomPosition, Quaternion.identity);
 
-            timer = 0;
+            spawnedEnemy.Add(roundEnemy);
         }
+    }
+
+    public void RevomeEnemy(GameObject enemy)
+    {
+        spawnedEnemy.Remove(enemy);
     }
 }
